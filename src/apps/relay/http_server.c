@@ -54,24 +54,24 @@ struct http_headers {
 
 static void write_http_echo(ioa_socket_handle s)
 {
-	if(s && !ioa_socket_tobeclosed(s)) {
-		SOCKET_APP_TYPE sat = get_ioa_socket_app_type(s);
-		if((sat == HTTP_CLIENT_SOCKET) || (sat == HTTPS_CLIENT_SOCKET)) {
-			ioa_network_buffer_handle nbh_http = ioa_network_buffer_allocate(s->e);
-			size_t len_http = ioa_network_buffer_get_size(nbh_http);
-			u08bits *data = ioa_network_buffer_data(nbh_http);
-			char data_http[1025];
-			char content_http[1025];
-			const char* title = "TURN Server";
-			const char* CORSEnablingHeaders = "Access-Control-Allow-Credentials:true\r\nAccess-Control-Allow-Headers:Content-Type, User-Agent, If-Modified-Since, Cache-Control, Range\r\nAccess-Control-Allow-Methods:OPTIONS, GET, POST, HEAD\r\nAccess-Control-Allow-Origin:*\r\nAccess-Control-Expose-Headers:Date, Server, Content-Type, Content-Length\r\n";
-			snprintf(content_http,sizeof(content_http)-1,"<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n    <title>%s</title>\r\n  </head>\r\n  <body>\r\n    <b>%s</b> <br> <b><i>use https connection for the admin session</i></b>\r\n  </body>\r\n</html>\r\n",title,title);
-			snprintf(data_http,sizeof(data_http)-1,"HTTP/1.0 200 OK\r\nServer: %s\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: %d\r\n\r\n%s%s",TURN_SOFTWARE,(int)strlen(content_http),content_http,CORSEnablingHeaders);
-			len_http = strlen(data_http);
-			ns_bcopy(data_http,data,len_http);
-			ioa_network_buffer_set_size(nbh_http,len_http);
-			send_data_from_ioa_socket_nbh(s, NULL, nbh_http, TTL_IGNORE, TOS_IGNORE,NULL);
-		}
-	}
+        if(s && !ioa_socket_tobeclosed(s)) {
+                SOCKET_APP_TYPE sat = get_ioa_socket_app_type(s);
+                if((sat == HTTP_CLIENT_SOCKET) || (sat == HTTPS_CLIENT_SOCKET)) {
+                        ioa_network_buffer_handle nbh_http = ioa_network_buffer_allocate(s->e);
+                        size_t len_http = ioa_network_buffer_get_size(nbh_http);
+                        u08bits *data = ioa_network_buffer_data(nbh_http);
+                        char data_http[2048];
+                        char content_http[1025];
+                        const char* title = "LoopUp TURN Server";
+                        const char* CORSEnablingHeaders = "Access-Control-Allow-Credentials:true\r\nAccess-Control-Allow-Headers:Content-Type, User-Agent, If-Modified-Since, Cache-Control, Range\r\nAccess-Control-Allow-Methods:OPTIONS, GET, POST, HEAD\r\nAccess-Control-Allow-Origin:*\r\nAccess-Control-Expose-Headers:Date, Server, Content-Type, Content-Length\r\n";
+                        snprintf(content_http,sizeof(content_http)-1,"<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n    <title>%s</title>\r\n  </head>\r\n  <body>\r\n    <b>%s</b> <br> <b><i>use https connection for the admin session</i></b>\r\n  </body>\r\n</html>\r\n",title,title);
+                        snprintf(data_http,sizeof(data_http)-1,"HTTP/1.0 200 OK\r\nServer: %s\r\n%sContent-Type: text/html; charset=UTF-8\r\nContent-Length: %d\r\n\r\n%s",TURN_SOFTWARE,CORSEnablingHeaders,(int)strlen(content_http),content_http);
+                        len_http = strlen(data_http);
+                        ns_bcopy(data_http,data,len_http);
+                        ioa_network_buffer_set_size(nbh_http,len_http);
+                        send_data_from_ioa_socket_nbh(s, NULL, nbh_http, TTL_IGNORE, TOS_IGNORE,NULL);
+                }
+        }
 }
 
 void handle_http_echo(ioa_socket_handle s) {
