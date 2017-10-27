@@ -1521,6 +1521,13 @@ static void https_finish_page(struct str_buffer *sb, ioa_socket_handle s, int cc
 	if(cclose) {
 		send_str_from_ioa_socket_tcp(s,"Connection: close");
 	}
+
+
+	// CORS enabling Headers 
+	const char* CORSEnablingHeaders = "Access-Control-Allow-Credentials:true\r\nAccess-Control-Allow-Headers:Content-Type, User-Agent, If-Modified-Since, Cache-Control, Range\r\nAccess-Control-Allow-Methods:OPTIONS, GET, POST, HEAD\r\nAccess-Control-Allow-Origin:*\r\nAccess-Control-Expose-Headers:Date, Server, Content-Type, Content-Length\r\n";        
+	// including the Headers in the resopnse 
+	send_str_from_ioa_socket_tcp(s,CORSEnablingHeaders);
+	
 	send_str_from_ioa_socket_tcp(s,"Content-Type: text/html; charset=UTF-8\r\nContent-Length: ");
 
 	send_ulong_from_ioa_socket_tcp(s,str_buffer_get_str_len(sb));
