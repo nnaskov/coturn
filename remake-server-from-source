@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "This will remove the currently installed server and will make a new version from the source files."
+echo "This script DOES NOT install dependencies."
+sudo make deinstall
+sudo make clean
+sudo ./configure
+sudo make install
+echo "Now we will start the STURN server."
+sudo turnserver -o
